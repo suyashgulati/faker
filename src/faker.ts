@@ -39,6 +39,9 @@ export interface FakerOptions {
   locales: UsedLocales;
   locale?: UsableLocale;
   localeFallback?: UsableLocale;
+  seed?: number;
+  /** @internal */
+  mersenne?: Mersenne;
 }
 
 const metadataKeys: ReadonlyArray<keyof LocaleDefinition> = [
@@ -80,7 +83,7 @@ export class Faker {
   readonly definitions: LocaleDefinition = this.initDefinitions();
 
   /** @internal */
-  private readonly _mersenne: Mersenne = mersenne();
+  private readonly _mersenne: Mersenne;
 
   readonly random: RandomModule = new RandomModule(this);
 
@@ -149,6 +152,10 @@ export class Faker {
     this.locales = opts.locales;
     this.locale = opts.locale || 'en';
     this.localeFallback = opts.localeFallback || 'en';
+    this._mersenne = opts.mersenne ?? mersenne();
+    if (opts.seed != null) {
+      this.seed(opts.seed);
+    }
   }
 
   /**
@@ -299,5 +306,54 @@ export class Faker {
    */
   setLocale(locale: UsableLocale): void {
     this.locale = locale;
+  }
+
+  /**
+   * Clones this faker instance including the current seed.
+   * This method is idempotent and does not consume any seed values.
+   * The forked instance will produce the same values as the original given that the methods are called in the same order.
+   *
+   * @see faker.derive If you want to generate deterministic but different values.
+   *
+   * @example
+   * faker.seed(42);
+   * faker.fork().person.firstName(); // 'Lavina'
+   * faker.fork().person.firstName(); // 'Lavina'
+   * faker.person.firstName(); // 'Lavina'
+   */
+  fork(): Faker {
+    return new Faker({
+      locale: this.locale,
+      localeFallback: this.localeFallback,
+      locales: this.locales,
+      mersenne: this._mersenne.fork(),
+    });
+  }
+
+  /**
+   * Derives a new Faker instance from the current one.
+   * This will consume a single value from the seed to initialize the seed of the derived new instance, thus has an impact on subsequent calls.
+   * The derived instance can be used to generate deterministic values based on the current seed without consuming a dynamic amount of seed values.
+   *
+   * @see faker.fork If you want to create an exact clone of this faker instance without consuming a seed value.
+   *
+   * @example
+   * faker.seed(42);
+   * faker.datatype.number(10); // 4
+   * faker.datatype.number(10); // 8
+   * faker.seed(42);
+   * const derived = faker.derive();
+   * const firstName = derived.person.firstName(); // 'Lavina'
+   * const lastName = derived.person.lastName(); // 'Kuhic'
+   * // It doesn't matter how many calls to derived are executed
+   * faker.datatype.number(10); // 8 <- This is same as before
+   */
+  derive(): Faker {
+    return new Faker({
+      locale: this.locale,
+      localeFallback: this.localeFallback,
+      locales: this.locales,
+      seed: this._mersenne.next({ min: 0, max: Number.MAX_SAFE_INTEGER }),
+    });
   }
 }

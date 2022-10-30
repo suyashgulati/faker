@@ -141,4 +141,57 @@ describe('faker', () => {
       expect(actual).toBe('Oriental');
     });
   });
+
+  describe('fork', () => {
+    it('should create a fork that returns the same values as the original', () => {
+      const fork1 = faker.fork();
+      const fork2 = faker.fork();
+      const fork3 = fork1.fork();
+
+      expect(fork1).not.toBe(faker);
+      expect(fork2).not.toBe(faker);
+      expect(fork3).not.toBe(faker);
+      expect(fork1).not.toBe(fork2);
+      expect(fork1).not.toBe(fork3);
+      expect(fork2).not.toBe(fork3);
+
+      const valueOrg = faker.datatype.number();
+      expect(fork1.datatype.number()).toBe(valueOrg);
+      expect(fork2.datatype.number()).toBe(valueOrg);
+      expect(fork3.datatype.number()).toBe(valueOrg);
+
+      const value1 = fork1.datatype.number();
+      expect(faker.datatype.number()).toBe(value1);
+      expect(fork2.datatype.number()).toBe(value1);
+      expect(fork3.datatype.number()).toBe(value1);
+
+      const value2 = fork2.datatype.number();
+      expect(fork1.datatype.number()).toBe(value2);
+      expect(faker.datatype.number()).toBe(value2);
+      expect(fork3.datatype.number()).toBe(value2);
+
+      const value3 = fork3.datatype.number();
+      expect(fork1.datatype.number()).toBe(value3);
+      expect(fork2.datatype.number()).toBe(value3);
+      expect(faker.datatype.number()).toBe(value3);
+    });
+  });
+
+  describe('derive', () => {
+    it("should create a derived faker, that doesn't affect the original", () => {
+      const seed = faker.seed();
+      faker.datatype.number();
+      const value = faker.datatype.number();
+
+      faker.seed(seed);
+      const derived = faker.derive();
+
+      expect(derived).not.toBe(faker);
+
+      for (let i = 0; i < derived.datatype.number(100); i++) {
+        derived.datatype.number();
+      }
+      expect(faker.datatype.number()).toBe(value);
+    });
+  });
 });

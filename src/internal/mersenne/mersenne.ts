@@ -21,6 +21,11 @@ export interface Mersenne {
    * @param seed The seed to use.
    */
   seed(seed: number | number[]): void;
+
+  /**
+   * Creates an exact copy of this instance preserving the current seed.
+   */
+  fork(): Mersenne;
 }
 
 /**
@@ -33,6 +38,15 @@ export default function mersenne(): Mersenne {
 
   twister.initGenrand(Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER));
 
+  return wrap(twister);
+}
+
+/**
+ * Wraps the twister instance to provide a more convenient API.
+ *
+ * @param twister THe twister instance to wrap.
+ */
+function wrap(twister: Twister): Mersenne {
   return {
     next({ min, max }): number {
       return Math.floor(twister.genrandReal2() * (max - min) + min);
@@ -44,6 +58,10 @@ export default function mersenne(): Mersenne {
       } else if (Array.isArray(seed)) {
         twister.initByArray(seed, seed.length);
       }
+    },
+
+    fork(): Mersenne {
+      return wrap(twister.fork());
     },
   };
 }

@@ -32,6 +32,33 @@ describe('mersenne twister', () => {
         });
       }
 
+      it('should not change the result when being forked', () => {
+        mersenne.seed(42);
+        const value = mersenne.next({ min: 0, max: 100 });
+
+        mersenne.seed(42);
+        const fork = mersenne.fork();
+
+        expect(mersenne.next({ min: 0, max: 100 })).toBe(value);
+        expect(fork.next({ min: 0, max: 100 })).toBe(value);
+      });
+
+      it('should return deterministic values when forked', () => {
+        const fork = mersenne.fork();
+
+        for (let i = 0; i < 10; i++) {
+          const actual = fork.next({ min: 0, max: 100 });
+
+          expect(actual).toBe(mersenne.next({ min: 0, max: 100 }));
+        }
+
+        for (let i = 0; i < 10; i++) {
+          const actual = mersenne.next({ min: 0, max: 100 });
+
+          expect(actual).toBe(fork.next({ min: 0, max: 100 }));
+        }
+      });
+
       it.todo(`should return 0 for next({ min: ${0}, max: ${1} })`, () => {
         const actual = mersenne.next({ min: 0, max: 1 });
 
