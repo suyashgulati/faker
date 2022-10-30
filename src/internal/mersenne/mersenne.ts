@@ -44,7 +44,7 @@ export default function mersenne(): Mersenne {
 /**
  * Wraps the twister instance to provide a more convenient API.
  *
- * @param twister THe twister instance to wrap.
+ * @param twister The twister instance to wrap.
  */
 function wrap(twister: Twister): Mersenne {
   return {
