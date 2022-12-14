@@ -135,9 +135,7 @@ export function passwordFnFactory(faker: Faker): {
       chars.push(nextChar);
     }
 
-    const password = faker.helpers.shuffle(chars).join('');
-
-    return password;
+    return faker.helpers.shuffle(chars).join('');
   }
 
   return password;
