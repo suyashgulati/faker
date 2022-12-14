@@ -54,21 +54,15 @@ export function passwordFnFactory(faker: Faker) {
     const charGroups = [
       {
         requireCount: requiredLowercaseCount,
-        generatorFn: () => faker.random.alpha({ casing: 'lower' }),
+        generatorFn: () => faker.string.alpha({ casing: 'lower' }),
       },
       {
         requireCount: requiredUppercaseCount,
-        generatorFn: () => faker.random.alpha({ casing: 'upper' }),
+        generatorFn: () => faker.string.alpha({ casing: 'upper' }),
       },
       {
         requireCount: requiredNumberCount,
-        generatorFn: () =>
-          faker.datatype
-            .number({
-              min: 0,
-              max: 9,
-            })
-            .toString(),
+        generatorFn: () => faker.string.numeric(),
       },
       {
         requireCount: requiredSymbolCout,
@@ -88,7 +82,7 @@ export function passwordFnFactory(faker: Faker) {
       const additionalCharCount =
         index === charGroups.length - 1
           ? totalAdditionalCharCount
-          : faker.datatype.number({
+          : faker.number.int({
               min: 0,
               max: totalAdditionalCharCount,
             });
