@@ -51,10 +51,7 @@ export function passwordFnFactory(faker: Faker) {
       },
       {
         requireCount: getCharCountFromOptions(options.includeSymbol),
-        generatorFn: () =>
-          faker.helpers.arrayElement(
-            '-#!$@%^&*()_+|~=`{}[]:";\'<>?,.\\/ '.split('')
-          ),
+        generatorFn: () => faker.string.special(),
       },
     ];
 
