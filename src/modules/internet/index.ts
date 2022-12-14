@@ -1,5 +1,6 @@
 import type { Faker } from '../..';
 import { charMapping } from './char-mappings';
+import { passwordFnFactory } from './password';
 import * as random_ua from './user-agent';
 
 export type EmojiType =
@@ -498,65 +499,7 @@ export class InternetModule {
     return mac;
   }
 
-  /**
-   * Generates a random password.
-   *
-   * @param len The length of the password to generate. Defaults to `15`.
-   * @param memorable Whether the generated password should be memorable. Defaults to `false`.
-   * @param pattern The pattern that all chars should match should match.
-   * This option will be ignored, if `memorable` is `true`. Defaults to `/\w/`.
-   * @param prefix The prefix to use. Defaults to `''`.
-   *
-   * @example
-   * faker.internet.password() // '89G1wJuBLbGziIs'
-   * faker.internet.password(20) // 'aF55c_8O9kZaPOrysFB_'
-   * faker.internet.password(20, true) // 'lawetimufozujosodedi'
-   * faker.internet.password(20, true, /[A-Z]/) // 'HMAQDFFYLDDUTBKVNFVS'
-   * faker.internet.password(20, true, /[A-Z]/, 'Hello ') // 'Hello IREOXTDWPERQSB'
-   *
-   * @since 2.0.1
-   */
-  password(
-    len: number = 15,
-    memorable: boolean = false,
-    pattern: RegExp = /\w/,
-    prefix: string = ''
-  ): string {
-    /*
-     * password-generator ( function )
-     * Copyright(c) 2011-2013 Bermi Ferrer <bermi@bermilabs.com>
-     * MIT Licensed
-     */
-    const vowel = /[aeiouAEIOU]$/;
-    const consonant = /[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]$/;
-    const _password = (
-      length: number,
-      memorable: boolean,
-      pattern: RegExp,
-      prefix: string
-    ): string => {
-      if (prefix.length >= length) {
-        return prefix;
-      }
-      if (memorable) {
-        if (prefix.match(consonant)) {
-          pattern = vowel;
-        } else {
-          pattern = consonant;
-        }
-      }
-      const n = this.faker.number.int(94) + 33;
-      let char = String.fromCharCode(n);
-      if (memorable) {
-        char = char.toLowerCase();
-      }
-      if (!char.match(pattern)) {
-        return _password(length, memorable, pattern, prefix);
-      }
-      return _password(length, memorable, pattern, prefix + char);
-    };
-    return _password(len, memorable, pattern, prefix);
-  }
+  password = passwordFnFactory(this.faker);
 
   /**
    * Generates a random emoji.

@@ -2,45 +2,14 @@ import type { Faker } from '../../faker';
 
 export type PasswordMode = 'secure' | 'simple';
 
-export type PasswordOptions = {
-  /**
-   * The specific length of the password.
-   */
-  length: number;
-  /**
-   * Whether lowercase letters should be included.
-   * If a number is provided the final result will have at least this many lowercase letters.
-   */
-  includeLowercase: boolean | number;
-  /**
-   * Whether numbers should be included.
-   * If a number is provided the final result will have at least this many numeric characters.
-   */
-  includeNumber: boolean | number;
-  /**
-   * Whether symbols should be included.
-   * If a number is provided the final result have will at least this many special characters.
-   */
-  includeSymbol: boolean | number;
-  /**
-   * Whether uppercase letters should be included.
-   * If a number is provided the final result will have at least this many uppercase letters.
-   */
-  includeUppercase: boolean | number;
-};
-
 /**
  * Generates a function to generate passwords.
  *
  * @internal
  *
  * @param faker A faker instance.
- *
  */
 export function passwordFnFactory(faker: Faker): {
-  (mode: PasswordMode): string;
-  (options: PasswordOptions): string;
-} {
   /**
    * Generates a random password.
    *
@@ -49,12 +18,14 @@ export function passwordFnFactory(faker: Faker): {
    * and all character types required.
    * - 'simple': A string with a length between 4 and 8,
    * where characters can be upper **OR** lowercase, and numbers.
+   *
+   * Defaults to 'secure'.
    */
-  function password(mode: PasswordMode): string;
+  (mode: PasswordMode): string;
   /**
    * Generates a random password.
    *
-   * @param options An options opbject.
+   * @param options An options object.
    * @param options.length The specific length of the password.
    * @param options.includeLowercase Whether lowercase letters should be included.
    * If a number is provided the final result will have at least this many lowercase letters.
@@ -65,7 +36,33 @@ export function passwordFnFactory(faker: Faker): {
    * @param options.includeUppercase Whether uppercase letters should be included.
    * If a number is provided the final result will have at least this many uppercase letters.
    */
-  function password(options: PasswordOptions): string;
+  (options: {
+    /**
+     * The specific length of the password.
+     */
+    length: number;
+    /**
+     * Whether lowercase letters should be included.
+     * If a number is provided the final result will have at least this many lowercase letters.
+     */
+    includeLowercase: boolean | number;
+    /**
+     * Whether numbers should be included.
+     * If a number is provided the final result will have at least this many numeric characters.
+     */
+    includeNumber: boolean | number;
+    /**
+     * Whether symbols should be included.
+     * If a number is provided the final result have will at least this many special characters.
+     */
+    includeSymbol: boolean | number;
+    /**
+     * Whether uppercase letters should be included.
+     * If a number is provided the final result will have at least this many uppercase letters.
+     */
+    includeUppercase: boolean | number;
+  }): string;
+} {
   /**
    * Generates a random password.
    *
@@ -80,8 +77,35 @@ export function passwordFnFactory(faker: Faker): {
    * @param options.includeUppercase Whether uppercase letters should be included.
    * If a number is provided the final result will have at least this many uppercase letters.
    */
-  function password(
-    options: PasswordMode | PasswordOptions = 'secure'
+  return function password(
+    options:
+      | PasswordMode
+      | {
+          /**
+           * The specific length of the password.
+           */
+          length: number;
+          /**
+           * Whether lowercase letters should be included.
+           * If a number is provided the final result will have at least this many lowercase letters.
+           */
+          includeLowercase: boolean | number;
+          /**
+           * Whether numbers should be included.
+           * If a number is provided the final result will have at least this many numeric characters.
+           */
+          includeNumber: boolean | number;
+          /**
+           * Whether symbols should be included.
+           * If a number is provided the final result have will at least this many special characters.
+           */
+          includeSymbol: boolean | number;
+          /**
+           * Whether uppercase letters should be included.
+           * If a number is provided the final result will have at least this many uppercase letters.
+           */
+          includeUppercase: boolean | number;
+        } = 'secure'
   ): string {
     if (typeof options === 'string') {
       switch (options) {
@@ -160,7 +184,5 @@ export function passwordFnFactory(faker: Faker): {
     }
 
     return faker.helpers.shuffle(chars).join('');
-  }
-
-  return password;
+  };
 }
