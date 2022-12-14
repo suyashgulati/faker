@@ -36,36 +36,21 @@ export function passwordFnFactory(faker: Faker) {
       }
     };
 
-    const requiredLowercaseCount = getCharCountFromOptions(
-      options.includeLowercase
-    );
-    const requiredNumberCount = getCharCountFromOptions(options.includeNumber);
-    const requiredSymbolCout = getCharCountFromOptions(options.includeSymbol);
-    const requiredUppercaseCount = getCharCountFromOptions(
-      options.includeUppercase
-    );
-    let totalAdditionalCharCount =
-      options.length -
-      (requiredLowercaseCount +
-        requiredNumberCount +
-        requiredSymbolCout +
-        requiredUppercaseCount);
-
     const charGroups = [
       {
-        requireCount: requiredLowercaseCount,
+        requireCount: getCharCountFromOptions(options.includeLowercase),
         generatorFn: () => faker.string.alpha({ casing: 'lower' }),
       },
       {
-        requireCount: requiredUppercaseCount,
+        requireCount: getCharCountFromOptions(options.includeUppercase),
         generatorFn: () => faker.string.alpha({ casing: 'upper' }),
       },
       {
-        requireCount: requiredNumberCount,
+        requireCount: getCharCountFromOptions(options.includeNumber),
         generatorFn: () => faker.string.numeric(),
       },
       {
-        requireCount: requiredSymbolCout,
+        requireCount: getCharCountFromOptions(options.includeSymbol),
         generatorFn: () =>
           faker.helpers.arrayElement(
             '-#!$@%^&*()_+|~=`{}[]:";\'<>?,.\\/ '.split('')
@@ -74,25 +59,19 @@ export function passwordFnFactory(faker: Faker) {
     ];
 
     const chars: string[] = [];
-    for (const [index, group] of charGroups.entries()) {
-      const { generatorFn, requireCount } = group;
-
-      // if we are at the last entry, we fill up for desired length
-      // otherwise generate a random number for additioLan char count besides the required one
-      const additionalCharCount =
-        index === charGroups.length - 1
-          ? totalAdditionalCharCount
-          : faker.number.int({
-              min: 0,
-              max: totalAdditionalCharCount,
-            });
-      totalAdditionalCharCount = totalAdditionalCharCount - additionalCharCount;
-
-      let charCount = additionalCharCount + requireCount;
-      while (charCount > 0) {
+    for (const groupOptions of charGroups) {
+      const { generatorFn } = groupOptions;
+      let { requireCount } = groupOptions;
+      while (requireCount > 0) {
         chars.push(generatorFn());
-        charCount--;
+        requireCount--;
       }
+    }
+
+    while (chars.length < options.length) {
+      const groupIndex = faker.number.int(charGroups.length - 1);
+      const nextChar = charGroups[groupIndex].generatorFn();
+      chars.push(nextChar);
     }
 
     const password = faker.helpers.shuffle(chars).join('');
