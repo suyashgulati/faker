@@ -3,10 +3,29 @@ import type { Faker } from '../../faker';
 export type PasswordMode = 'secure' | 'simple';
 
 export type PasswordOptions = {
+  /**
+   * The specific length of the password.
+   */
   length: number;
+  /**
+   * Whether lowercase letters should be included.
+   * If a number is provided the final result will have at least this many lowercase letters.
+   */
   includeLowercase: boolean | number;
+  /**
+   * Whether numbers should be included.
+   * If a number is provided the final result will have at least this many numeric characters.
+   */
   includeNumber: boolean | number;
+  /**
+   * Whether symbols should be included.
+   * If a number is provided the final result have will at least this many special characters.
+   */
   includeSymbol: boolean | number;
+  /**
+   * Whether uppercase letters should be included.
+   * If a number is provided the final result will have at least this many uppercase letters.
+   */
   includeUppercase: boolean | number;
 };
 
@@ -23,7 +42,7 @@ export function passwordFnFactory(faker: Faker): {
   (options: PasswordOptions): string;
 } {
   /**
-   * Generates a random password based on a mode.
+   * Generates a random password.
    *
    * @param mode The mode in which the password will be generated.
    * - 'secure': A string with a length between 24 and 64
@@ -38,23 +57,28 @@ export function passwordFnFactory(faker: Faker): {
    * @param options An options opbject.
    * @param options.length The specific length of the password.
    * @param options.includeLowercase Whether lowercase letters should be included.
-   * If a number is provided the final result will at least have this many lowercase letters.
+   * If a number is provided the final result will have at least this many lowercase letters.
    * @param options.includeNumber Whether numbers should be included.
-   * If a number is provided the final result will at least have this many number.
+   * If a number is provided the final result will have at least this many numeric characters.
    * @param options.includeSymbol Whether symbols should be included.
-   * If a number is provided the final result will at least have this many symbols.
-   * @param options.includeUppercase Whether uppercase letters should be included. If a number is provided the final result will at least have this many uppercase letters.
+   * If a number is provided the final result have will at least this many special characters.
+   * @param options.includeUppercase Whether uppercase letters should be included.
+   * If a number is provided the final result will have at least this many uppercase letters.
    */
   function password(options: PasswordOptions): string;
   /**
    * Generates a random password.
    *
-   * @param options An options opbject.
+   * @param options A password generation mode or an options opbject.
    * @param options.length The specific length of the password.
-   * @param options.includeLowercase Whether lowercase letters should be included. If a number is provided the final result will at least have this many lowercase letters.
-   * @param options.includeNumber Whether numbers should be included. If a number is provided the final result will at least have this many number.
-   * @param options.includeSymbol Whether symbols should be included. If a number is provided the final result will at least have this many symbols.
-   * @param options.includeUppercase Whether uppercase letters should be included. If a number is provided the final result will at least have this many uppercase letters.
+   * @param options.includeLowercase Whether lowercase letters should be included.
+   * If a number is provided the final result will have at least this many lowercase letters.
+   * @param options.includeNumber Whether numbers should be included.
+   * If a number is provided the final result will have at least this many numeric characters.
+   * @param options.includeSymbol Whether symbols should be included.
+   * If a number is provided the final result have will at least this many special characters.
+   * @param options.includeUppercase Whether uppercase letters should be included.
+   * If a number is provided the final result will have at least this many uppercase letters.
    */
   function password(
     options: PasswordMode | PasswordOptions = 'secure'
