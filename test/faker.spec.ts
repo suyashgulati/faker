@@ -191,6 +191,7 @@ describe('faker', () => {
       for (let i = 0; i < derived.datatype.number(100); i++) {
         derived.datatype.number();
       }
+
       expect(faker.datatype.number()).toBe(value);
     });
   });
