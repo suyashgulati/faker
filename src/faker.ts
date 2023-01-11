@@ -343,14 +343,14 @@ export class Faker {
    *
    * @example
    * faker.seed(42);
-   * faker.datatype.number(10); // 4
-   * faker.datatype.number(10); // 8
+   * faker.number.int(10); // 4
+   * faker.number.int(10); // 8
    * faker.seed(42);
    * const derived = faker.derive();
    * const firstName = derived.person.firstName(); // 'Lavina'
    * const lastName = derived.person.lastName(); // 'Kuhic'
    * // It doesn't matter how many calls to derived are executed
-   * faker.datatype.number(10); // 8 <- This is same as before
+   * faker.number.int(10); // 8 <- This is same as before
    */
   derive(): Faker {
     return new Faker({

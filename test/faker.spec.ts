@@ -155,44 +155,44 @@ describe('faker', () => {
       expect(fork1).not.toBe(fork3);
       expect(fork2).not.toBe(fork3);
 
-      const valueOrg = faker.datatype.number();
-      expect(fork1.datatype.number()).toBe(valueOrg);
-      expect(fork2.datatype.number()).toBe(valueOrg);
-      expect(fork3.datatype.number()).toBe(valueOrg);
+      const valueOrg = faker.number.int();
+      expect(fork1.number.int()).toBe(valueOrg);
+      expect(fork2.number.int()).toBe(valueOrg);
+      expect(fork3.number.int()).toBe(valueOrg);
 
-      const value1 = fork1.datatype.number();
-      expect(faker.datatype.number()).toBe(value1);
-      expect(fork2.datatype.number()).toBe(value1);
-      expect(fork3.datatype.number()).toBe(value1);
+      const value1 = fork1.number.int();
+      expect(faker.number.int()).toBe(value1);
+      expect(fork2.number.int()).toBe(value1);
+      expect(fork3.number.int()).toBe(value1);
 
-      const value2 = fork2.datatype.number();
-      expect(fork1.datatype.number()).toBe(value2);
-      expect(faker.datatype.number()).toBe(value2);
-      expect(fork3.datatype.number()).toBe(value2);
+      const value2 = fork2.number.int();
+      expect(fork1.number.int()).toBe(value2);
+      expect(faker.number.int()).toBe(value2);
+      expect(fork3.number.int()).toBe(value2);
 
-      const value3 = fork3.datatype.number();
-      expect(fork1.datatype.number()).toBe(value3);
-      expect(fork2.datatype.number()).toBe(value3);
-      expect(faker.datatype.number()).toBe(value3);
+      const value3 = fork3.number.int();
+      expect(fork1.number.int()).toBe(value3);
+      expect(fork2.number.int()).toBe(value3);
+      expect(faker.number.int()).toBe(value3);
     });
   });
 
   describe('derive', () => {
     it("should create a derived faker, that doesn't affect the original", () => {
       const seed = faker.seed();
-      faker.datatype.number();
-      const value = faker.datatype.number();
+      faker.number.int();
+      const value = faker.number.int();
 
       faker.seed(seed);
       const derived = faker.derive();
 
       expect(derived).not.toBe(faker);
 
-      for (let i = 0; i < derived.datatype.number(100); i++) {
-        derived.datatype.number();
+      for (let i = 0; i < derived.number.int(100); i++) {
+        derived.number.int();
       }
 
-      expect(faker.datatype.number()).toBe(value);
+      expect(faker.number.int()).toBe(value);
     });
   });
 });
