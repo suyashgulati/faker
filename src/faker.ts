@@ -336,8 +336,10 @@ export class Faker {
 
   /**
    * Derives a new Faker instance from the current one.
-   * This will consume a single value from the seed to initialize the seed of the derived new instance, thus has an impact on subsequent calls.
+   * This will consume a single value from the original instance to initialize the seed of the derived new instance, thus has an impact on subsequent calls.
    * The derived instance can be used to generate deterministic values based on the current seed without consuming a dynamic amount of seed values.
+   * This is useful, if you wish to generate a complex object (e.g. a Person) and might want to add a property to it later.
+   * If the Person is created from a derived instance, then adding or removing properties from the Person doesn't have any impact on the other data, generated using the original instance (except from the derive call itself).
    *
    * @see faker.fork If you want to create an exact clone of this faker instance without consuming a seed value.
    *
