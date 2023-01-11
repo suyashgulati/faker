@@ -1,4 +1,5 @@
 import type { Faker } from '../..';
+import { deprecated } from '../../internal/deprecated';
 
 /**
  * Module to generate company related entries.
@@ -10,6 +11,7 @@ export class CompanyModule {
       if (name === 'constructor' || typeof this[name] !== 'function') {
         continue;
       }
+
       this[name] = this[name].bind(this);
     }
   }
@@ -17,12 +19,22 @@ export class CompanyModule {
   /**
    * Returns an array with possible company name suffixes.
    *
+   * @see faker.company.name()
+   *
    * @example
    * faker.company.suffixes() // [ 'Inc', 'and Sons', 'LLC', 'Group' ]
    *
    * @since 2.0.1
+   *
+   * @deprecated Use `faker.company.name` instead.
    */
   suffixes(): string[] {
+    deprecated({
+      deprecated: 'faker.company.suffixes',
+      proposed: 'faker.company.name',
+      since: '8.0',
+      until: '9.0',
+    });
     // Don't want the source array exposed to modification, so return a copy
     return this.faker.definitions.company.suffix.slice(0);
   }
@@ -36,22 +48,30 @@ export class CompanyModule {
    * @since 7.4.0
    */
   name(): string {
-    const pattern = this.faker.helpers.arrayElement(
+    return this.faker.helpers.fake(
       this.faker.definitions.company.name_patterns
     );
-
-    return this.faker.helpers.fake(pattern);
   }
 
   /**
    * Returns a random company suffix.
    *
+   * @see faker.company.name()
+   *
    * @example
    * faker.company.companySuffix() // 'and Sons'
    *
    * @since 2.0.1
+   *
+   * @deprecated Use `faker.company.name` instead.
    */
   companySuffix(): string {
+    deprecated({
+      deprecated: 'faker.company.companySuffix',
+      proposed: 'faker.company.name',
+      since: '8.0',
+      until: '9.0',
+    });
     return this.faker.helpers.arrayElement(this.suffixes());
   }
 

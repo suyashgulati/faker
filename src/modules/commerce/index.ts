@@ -10,6 +10,7 @@ export class CommerceModule {
       if (name === 'constructor' || typeof this[name] !== 'function') {
         continue;
       }
+
       this[name] = this[name].bind(this);
     }
   }
@@ -67,14 +68,10 @@ export class CommerceModule {
       return `${symbol}${0.0}`;
     }
 
-    const randValue = this.faker.datatype.number({ max: max, min: min });
+    // TODO @Shinigami92 2022-11-24: https://github.com/faker-js/faker/issues/350
+    const randValue = this.faker.number.int({ min, max });
 
-    return (
-      symbol +
-      (Math.round(randValue * Math.pow(10, dec)) / Math.pow(10, dec)).toFixed(
-        dec
-      )
-    );
+    return symbol + randValue.toFixed(dec);
   }
 
   /**

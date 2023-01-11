@@ -79,7 +79,7 @@ export type NumericChar =
 export type AlphaChar = LowerAlphaChar | UpperAlphaChar;
 export type AlphaNumericChar = AlphaChar | NumericChar;
 
-const SAMPLE_MAX_LENGTH = Math.pow(2, 20);
+const SAMPLE_MAX_LENGTH = 2 ** 20;
 
 /**
  * Module to generate string related entries.
@@ -91,6 +91,7 @@ export class StringModule {
       if (name === 'constructor' || typeof this[name] !== 'function') {
         continue;
       }
+
       this[name] = this[name].bind(this);
     }
   }
@@ -241,6 +242,93 @@ export class StringModule {
   }
 
   /**
+   * Returns a [binary](https://en.wikipedia.org/wiki/Binary_number) string.
+   *
+   * @param options The optional options object.
+   * @param options.length The number or range of characters to generate after the prefix. Defaults to `1`.
+   * @param options.prefix Prefix for the generated number. Defaults to `'0b'`.
+   *
+   * @see faker.number.binary() If you would like to generate a `binary number` (within a range).
+   *
+   * @example
+   * faker.string.binary() // '0b1'
+   * faker.string.binary({ length: 10 }) // '0b1101011011'
+   * faker.string.binary({ length: { min: 5, max: 10 } }) // '0b11101011'
+   * faker.string.binary({ prefix: '0b' }) // '0b1'
+   * faker.string.binary({ length: 10, prefix: 'bin_' }) // 'bin_1101011011'
+   *
+   * @since 8.0.0
+   */
+  binary(
+    options: {
+      length?: number | { min: number; max: number };
+      prefix?: string;
+    } = {}
+  ): string {
+    const { prefix = '0b' } = options;
+    const length = this.faker.helpers.rangeToNumber(options.length ?? 1);
+    if (length <= 0) {
+      return prefix;
+    }
+
+    let binaryString = '';
+
+    for (let i = 0; i < length; i++) {
+      binaryString += this.faker.helpers.arrayElement(['0', '1']);
+    }
+
+    return `${prefix}${binaryString}`;
+  }
+
+  /**
+   * Returns an [octal](https://en.wikipedia.org/wiki/Octal) string.
+   *
+   * @param options The optional options object.
+   * @param options.length The number or range of characters to generate after the prefix. Defaults to `1`.
+   * @param options.prefix Prefix for the generated number. Defaults to `'0o'`.
+   *
+   * @see faker.number.octal() If you would like to generate an `octal number` (within a range).
+   *
+   * @example
+   * faker.string.octal() // '0o3'
+   * faker.string.octal({ length: 10 }) // '0o1526216210'
+   * faker.string.octal({ length: { min: 5, max: 10 } }) // '0o15263214'
+   * faker.string.octal({ prefix: '0o' }) // '0o7'
+   * faker.string.octal({ length: 10, prefix: 'oct_' }) // 'oct_1542153414'
+   *
+   * @since 8.0.0
+   */
+  octal(
+    options: {
+      length?: number | { min: number; max: number };
+      prefix?: string;
+    } = {}
+  ): string {
+    const { prefix = '0o' } = options;
+    const length = this.faker.helpers.rangeToNumber(options.length ?? 1);
+    if (length <= 0) {
+      return prefix;
+    }
+
+    let octalString = '';
+
+    for (let i = 0; i < length; i++) {
+      octalString += this.faker.helpers.arrayElement([
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+      ]);
+    }
+
+    return `${prefix}${octalString}`;
+  }
+
+  /**
    * Returns a [hexadecimal](https://en.wikipedia.org/wiki/Hexadecimal) string.
    *
    * @param options The optional options object.
@@ -317,15 +405,17 @@ export class StringModule {
    *
    * @param options Either the number of characters or the options to use.
    * @param options.length The number or range of digits to generate. Defaults to `1`.
-   * @param options.allowLeadingZeros If true, leading zeros will be allowed. Defaults to `false`.
+   * @param options.allowLeadingZeros Whether leading zeros are allowed or not. Defaults to `true`.
    * @param options.exclude An array of digits which should be excluded in the generated string. Defaults to `[]`.
+   *
+   * @see faker.number.int() If you would like to generate a `number` (within a range).
    *
    * @example
    * faker.string.numeric() // '2'
    * faker.string.numeric(5) // '31507'
-   * faker.string.numeric(42) // '56434563150765416546479875435481513188548'
+   * faker.string.numeric(42) // '06434563150765416546479875435481513188548'
    * faker.string.numeric({ length: { min: 5, max: 10 } }) // '197089478'
-   * faker.string.numeric({ length: 42, allowLeadingZeros: true }) // '00564846278453876543517840713421451546115'
+   * faker.string.numeric({ length: 42, allowLeadingZeros: false }) // '72564846278453876543517840713421451546115'
    * faker.string.numeric({ length: 6, exclude: ['0'] }) // '943228'
    *
    * @since 8.0.0
@@ -350,7 +440,7 @@ export class StringModule {
       return '';
     }
 
-    const { allowLeadingZeros = false } = options;
+    const { allowLeadingZeros = true } = options;
     let { exclude = [] } = options;
 
     if (typeof exclude === 'string') {
@@ -416,7 +506,7 @@ export class StringModule {
 
     while (returnString.length < length) {
       returnString += String.fromCharCode(
-        this.faker.datatype.number(charCodeOption)
+        this.faker.number.int(charCodeOption)
       );
     }
 
@@ -434,10 +524,114 @@ export class StringModule {
   uuid(): string {
     const RFC4122_TEMPLATE = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
     const replacePlaceholders = (placeholder: string) => {
-      const random = this.faker.datatype.number({ min: 0, max: 15 });
+      const random = this.faker.number.int(15);
       const value = placeholder === 'x' ? random : (random & 0x3) | 0x8;
       return value.toString(16);
     };
+
     return RFC4122_TEMPLATE.replace(/[xy]/g, replacePlaceholders);
+  }
+
+  /**
+   * Generates a [Nano ID](https://github.com/ai/nanoid).
+   *
+   * @param length Length of the generated string. Defaults to `21`.
+   * @param length.min The minimum length of the Nano ID to generate.
+   * @param length.max The maximum length of the Nano ID to generate.
+   *
+   * @example
+   * faker.string.nanoid() // ptL0KpX_yRMI98JFr6B3n
+   * faker.string.nanoid(10) // VsvwSdm_Am
+   * faker.string.nanoid({ min: 13, max: 37 }) // KIRsdEL9jxVgqhBDlm
+   *
+   * @since 8.0.0
+   */
+  nanoid(length: number | { min: number; max: number } = 21): string {
+    length = this.faker.helpers.rangeToNumber(length);
+    if (length <= 0) {
+      return '';
+    }
+
+    const generators = [
+      {
+        value: () => this.alphanumeric(1),
+        // a-z is 26 characters
+        // this times 2 for upper & lower case is 52
+        // add all numbers 0-9 (10 in total) you get 62
+        weight: 62,
+      },
+      {
+        value: () => this.faker.helpers.arrayElement(['_', '-']),
+        weight: 2,
+      },
+    ];
+    let result = '';
+    while (result.length < length) {
+      const charGen = this.faker.helpers.weightedArrayElement(generators);
+      result += charGen();
+    }
+
+    return result;
+  }
+
+  /**
+   * Returns a string containing only special characters.
+   *
+   * @param length Length of the generated string. Defaults to `1`.
+   * @param length.min The minimum number of special characters to generate.
+   * @param length.max The maximum number of special characters to generate.
+   *
+   * @example
+   * faker.string.special() // '$'
+   * faker.string.special(5) // '#*!.~'
+   * faker.string.special({ min: 5, max: 10 }) // ')|@*>^+'
+   *
+   * @since 8.0.0
+   */
+  special(length: number | { min: number; max: number } = 1): string {
+    length = this.faker.helpers.rangeToNumber(length);
+    if (length <= 0) {
+      return '';
+    }
+
+    let specialString = '';
+    for (let i = 0; i < length; i++) {
+      specialString += this.faker.helpers.arrayElement([
+        '!',
+        '"',
+        '#',
+        '$',
+        '%',
+        '&',
+        "'",
+        '(',
+        ')',
+        '*',
+        '+',
+        ',',
+        '-',
+        '.',
+        '/',
+        ':',
+        ';',
+        '<',
+        '=',
+        '>',
+        '?',
+        '@',
+        '[',
+        '\\',
+        ']',
+        '^',
+        '_',
+        '`',
+        '{',
+        '|',
+        '}',
+        '~',
+      ]);
+    }
+
+    return specialString;
   }
 }

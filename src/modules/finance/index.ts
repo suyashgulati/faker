@@ -12,6 +12,7 @@ export class FinanceModule {
       if (name === 'constructor' || typeof this[name] !== 'function') {
         continue;
       }
+
       this[name] = this[name].bind(this);
     }
   }
@@ -34,6 +35,7 @@ export class FinanceModule {
     for (let i = 0; i < length; i++) {
       template += '#';
     }
+
     length = null;
     return this.faker.helpers.replaceSymbolWithNumber(template);
   }
@@ -143,10 +145,10 @@ export class FinanceModule {
     symbol: string = '',
     autoFormat?: boolean
   ): string {
-    const randValue = this.faker.datatype.number({
+    const randValue = this.faker.number.float({
       max,
       min,
-      precision: Math.pow(10, -dec),
+      precision: 10 ** -dec,
     });
 
     let formattedString: string;
@@ -219,6 +221,7 @@ export class FinanceModule {
         this.faker.definitions.finance.currency
       )['symbol'];
     }
+
     return symbol;
   }
 
@@ -231,7 +234,7 @@ export class FinanceModule {
    * @since 3.1.0
    */
   bitcoinAddress(): string {
-    const addressLength = this.faker.datatype.number({ min: 25, max: 39 });
+    const addressLength = this.faker.number.int({ min: 25, max: 39 });
 
     let address = this.faker.helpers.arrayElement(['1', '3']);
 
@@ -253,7 +256,7 @@ export class FinanceModule {
    * @since 5.0.0
    */
   litecoinAddress(): string {
-    const addressLength = this.faker.datatype.number({ min: 26, max: 33 });
+    const addressLength = this.faker.number.int({ min: 26, max: 33 });
 
     let address = this.faker.helpers.arrayElement(['L', 'M', '3']);
 
@@ -292,6 +295,7 @@ export class FinanceModule {
       const formats = this.faker.helpers.objectValue(localeFormat); // There could be multiple formats
       format = this.faker.helpers.arrayElement(formats);
     }
+
     format = format.replace(/\//g, '');
     return this.faker.helpers.replaceCreditCardSymbols(format);
   }
@@ -305,11 +309,7 @@ export class FinanceModule {
    * @since 5.0.0
    */
   creditCardCVV(): string {
-    let cvv = '';
-    for (let i = 0; i < 3; i++) {
-      cvv += this.faker.datatype.number({ max: 9 }).toString();
-    }
-    return cvv;
+    return this.faker.string.numeric({ length: 3, allowLeadingZeros: true });
   }
 
   /**
@@ -342,11 +342,14 @@ export class FinanceModule {
     if (length < 1) {
       throw new FakerError('minimum length is 1');
     }
-    return Array.from({ length }, () => this.faker.datatype.number(9)).join('');
+
+    return this.faker.string.numeric({ length, allowLeadingZeros: true });
   }
 
   /**
-   * Generates a random Ethereum address.
+   * Creates a random, non-checksum Ethereum address.
+   *
+   * To generate a checksummed Ethereum address (with specific per character casing), wrap this method in a custom method and use third-party libraries to transform the result.
    *
    * @example
    * faker.finance.ethereumAddress() // '0xf03dfeecbafc5147241cc4c4ca20b3c9dfd04c4a'
@@ -394,7 +397,7 @@ export class FinanceModule {
           s += this.faker.helpers.arrayElement(iban.alpha);
         } else if (bban.type === 'c') {
           if (this.faker.datatype.boolean(0.8)) {
-            s += this.faker.datatype.number(9);
+            s += this.faker.number.int(9);
           } else {
             s += this.faker.helpers.arrayElement(iban.alpha);
           }
@@ -408,13 +411,16 @@ export class FinanceModule {
               c--;
             }
           } else {
-            s += this.faker.datatype.number(9);
+            s += this.faker.number.int(9);
           }
         }
+
         c--;
       }
+
       s = s.substring(0, count);
     }
+
     let checksum: string | number =
       98 - iban.mod97(iban.toDigitString(`${s}${ibanFormat.country}00`));
 

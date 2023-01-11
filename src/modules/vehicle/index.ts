@@ -10,6 +10,7 @@ export class VehicleModule {
       if (name === 'constructor' || typeof this[name] !== 'function') {
         continue;
       }
+
       this[name] = this[name].bind(this);
     }
   }
@@ -100,8 +101,7 @@ export class VehicleModule {
       length: 1,
       casing: 'upper',
       exclude,
-    })}${this.faker.datatype.number({ min: 10000, max: 99999 })}` // return five digit #
-      .toUpperCase();
+    })}${this.faker.number.int({ min: 10000, max: 99999 })}`; // return five digit #
   }
 
   /**
@@ -128,12 +128,9 @@ export class VehicleModule {
     return `${this.faker.string.alpha({
       length: 2,
       casing: 'upper',
-    })}${this.faker.datatype.number({
-      min: 0,
-      max: 9,
-    })}${this.faker.datatype.number({
-      min: 0,
-      max: 9,
+    })}${this.faker.string.numeric({
+      length: 2,
+      allowLeadingZeros: true,
     })}${this.faker.string.alpha({
       length: 3,
       casing: 'upper',

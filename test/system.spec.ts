@@ -1,25 +1,10 @@
 import validator from 'validator';
 import { afterEach, describe, expect, it } from 'vitest';
 import { faker } from '../src';
-import { seededRuns, seededTests } from './support/seededRuns';
+import { seededTests } from './support/seededRuns';
 import { times } from './support/times';
 
 const NON_SEEDED_BASED_RUN = 5;
-
-const functionNames = [
-  'commonFileExt',
-  'commonFileName',
-  'commonFileType',
-  'cron',
-  'directoryPath',
-  'fileExt',
-  'fileName',
-  'filePath',
-  'fileType',
-  'mimeType',
-  'networkInterface',
-  'semver',
-];
 
 describe('system', () => {
   afterEach(() => {
@@ -79,20 +64,6 @@ describe('system', () => {
         .it('with includeNonStandard false', { includeNonStandard: false });
     });
   });
-
-  for (const seed of seededRuns) {
-    describe(`seed: ${seed}`, () => {
-      for (const functionName of functionNames) {
-        it(`${functionName}()`, () => {
-          faker.seed(seed);
-
-          const actual = faker.system[functionName]();
-
-          expect(actual).toMatchSnapshot();
-        });
-      }
-    });
-  }
 
   describe(`random seeded tests for seed ${faker.seed()}`, () => {
     for (let i = 1; i <= NON_SEEDED_BASED_RUN; i++) {
@@ -198,10 +169,8 @@ describe('system', () => {
         it('should return file ext', () => {
           const fileExt = faker.system.fileExt();
 
-          expect(
-            fileExt.length,
-            'generated fileExt should start with ."'
-          ).toBeGreaterThan(1);
+          expect(fileExt).toBeTypeOf('string');
+          expect(fileExt).not.toBe('');
         });
 
         it('should return file ext based on mimeType', () => {
@@ -416,7 +385,7 @@ describe('system', () => {
 
       describe('cron()', () => {
         const regex =
-          /^([1-9]|[1-5]\d|\*) ([0-9]|1\d|2[0-3]|\*) ([1-9]|[12]\d|3[01]|\*|\?) ([1-9]|1[0-2]|\*) ([0-6]|\*|\?|[A-Z]{3}) ((19[7-9]d)|20\d{2}|\*)?/;
+          /^([0-9]|[1-5]\d|\*) ([0-9]|1\d|2[0-3]|\*) ([1-9]|[12]\d|3[01]|\*|\?) ([1-9]|1[0-2]|\*) ([0-6]|\*|\?|[A-Z]{3}) ((19[7-9]d)|20\d{2}|\*)?/;
 
         const regexElements = regex.toString().replace(/\//g, '').split(' ');
 
@@ -439,7 +408,7 @@ describe('system', () => {
         );
 
         it('should return non-standard cron expressions', () => {
-          const validResults = ['1', '2', '3', '4', '5', '*', '@'];
+          const validResults = ['1', '2', '3', '4', '5', '6', '*', '@'];
           expect(
             faker.system.cron({ includeNonStandard: true })[0],
             'generated cron, string should contain non-standard cron labels'
