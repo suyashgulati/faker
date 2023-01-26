@@ -346,9 +346,9 @@ export class Faker {
    *
    * @example
    * faker.seed(42);
-   * faker.fork().person.firstName(); // 'Lavina'
-   * faker.fork().person.firstName(); // 'Lavina'
-   * faker.person.firstName(); // 'Lavina'
+   * faker.fork().person.firstName(); // 'Lavina' (1st call)
+   * faker.fork().person.firstName(); // 'Lavina' (1st call)
+   * faker.person.firstName(); // 'Lavina' (1st call)
    */
   fork(): Faker {
     return new Faker({
@@ -370,14 +370,14 @@ export class Faker {
    *
    * @example
    * faker.seed(42);
-   * faker.number.int(10); // 4
-   * faker.number.int(10); // 8
+   * faker.number.int(10); // 4 (1st call)
+   * faker.number.int(10); // 8 (2nd call)
    * faker.seed(42);
-   * const derived = faker.derive();
+   * const derived = faker.derive(); // (1st call)
    * const firstName = derived.person.firstName(); // 'Lavina'
    * const lastName = derived.person.lastName(); // 'Kuhic'
    * // It doesn't matter how many calls to derived are executed
-   * faker.number.int(10); // 8 <- This is same as before
+   * faker.number.int(10); // 8 (2nd call) <- This is same as before
    */
   derive(): Faker {
     return new Faker({
