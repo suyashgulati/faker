@@ -3,12 +3,6 @@ import type { Mersenne } from '../src/internal/mersenne/mersenne';
 import mersenneFn from '../src/internal/mersenne/mersenne';
 import { seededRuns } from './support/seededRuns';
 
-const minMaxTestCases = [
-  { min: 0, max: 100 },
-  { min: -60, max: 0 },
-  { min: -50, max: 60 },
-];
-
 const NON_SEEDED_BASED_RUN = 25;
 
 describe('mersenne twister', () => {
@@ -24,45 +18,10 @@ describe('mersenne twister', () => {
         mersenne.seed(seed);
       });
 
-      for (const { min, max } of minMaxTestCases) {
-        it(`should return deterministic values for next({ min: ${min}, max: ${max} })`, () => {
-          const actual = mersenne.next({ min, max });
+      it(`should return deterministic value for next()`, () => {
+        const actual = mersenne.next();
 
-          expect(actual).toMatchSnapshot();
-        });
-      }
-
-      it('should not change the result when being forked', () => {
-        mersenne.seed(42);
-        const value = mersenne.next({ min: 0, max: 100 });
-
-        mersenne.seed(42);
-        const fork = mersenne.fork();
-
-        expect(mersenne.next({ min: 0, max: 100 })).toBe(value);
-        expect(fork.next({ min: 0, max: 100 })).toBe(value);
-      });
-
-      it('should return deterministic values when forked', () => {
-        const fork = mersenne.fork();
-
-        for (let i = 0; i < 10; i++) {
-          const actual = fork.next({ min: 0, max: 100 });
-
-          expect(actual).toBe(mersenne.next({ min: 0, max: 100 }));
-        }
-
-        for (let i = 0; i < 10; i++) {
-          const actual = mersenne.next({ min: 0, max: 100 });
-
-          expect(actual).toBe(fork.next({ min: 0, max: 100 }));
-        }
-      });
-
-      it.todo(`should return 0 for next({ min: ${0}, max: ${1} })`, () => {
-        const actual = mersenne.next({ min: 0, max: 1 });
-
-        expect(actual).toEqual(0);
+        expect(actual).toMatchSnapshot();
       });
     });
   }
@@ -84,11 +43,11 @@ describe('mersenne twister', () => {
 
       for (let i = 1; i <= NON_SEEDED_BASED_RUN; i++) {
         describe('next', () => {
-          it('should return random number from interval [min, max)', () => {
-            const actual = mersenne.next({ min: 0, max: 2 });
+          it('should return random number from interval [0, 1)', () => {
+            const actual = mersenne.next();
 
             expect(actual).toBeGreaterThanOrEqual(0);
-            expect(actual).toBeLessThan(2);
+            expect(actual).toBeLessThan(1);
           });
         });
       }
