@@ -45,10 +45,7 @@ export interface FakerOptions {
   mersenne?: Mersenne;
 }
 
-const metadataKeys: ReadonlyArray<keyof LocaleDefinition> = [
-  'title',
-  'separator',
-];
+const metadataKeys: ReadonlyArray<keyof LocaleDefinition> = ['title'];
 
 export class Faker {
   locales: UsedLocales;
