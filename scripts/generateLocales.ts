@@ -261,6 +261,33 @@ function updateLocaleFileHook(
   if (filePath === 'never') {
     console.log(`${filePath} <-> ${locale} @ ${localePath.join(' -> ')}`);
   }
+
+  const fileContent = readFileSync(filePath).toString();
+  const searchString = 'export default ';
+  const compareIndex = fileContent.indexOf(searchString) + searchString.length;
+  const compareChar = fileContent.substring(compareIndex);
+  const isStaticFile = ['[', '{', 'Object.freeze'].some((validStart) =>
+    compareChar.startsWith(validStart)
+  );
+  if (!isStaticFile) {
+    return;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  let localeContent = require(filePath).default;
+  if (Array.isArray(localeContent)) {
+    // require unique entires
+    localeContent = [...new Set(localeContent)];
+    // require 1k entries max
+    localeContent = localeContent.slice(0, 1000);
+    // require entries to be alphabetically sorted
+    localeContent = localeContent.sort();
+  }
+
+  const fileContentPreData = fileContent.substring(0, compareIndex);
+  const newContent = fileContentPreData + JSON.stringify(localeContent);
+
+  writeFileSync(filePath, format(newContent, prettierTsOptions));
 }
 
 // Start of actual logic

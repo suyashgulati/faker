@@ -8,6 +8,5 @@ export default {
     'Freitag',
     'Samstag',
   ],
-
   abbr: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
 };

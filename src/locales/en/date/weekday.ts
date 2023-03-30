@@ -8,6 +8,5 @@ export default {
     'Friday',
     'Saturday',
   ],
-
   abbr: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 };

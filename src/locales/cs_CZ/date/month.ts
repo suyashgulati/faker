@@ -13,7 +13,6 @@ export default {
     'Listopad',
     'Prosinec',
   ],
-
   abbr: [
     'Led',
     'Úno',

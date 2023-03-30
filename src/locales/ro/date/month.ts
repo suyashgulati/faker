@@ -13,7 +13,6 @@ export default {
     'Noiembrie',
     'Decembrie',
   ],
-
   abbr: [
     'Ian',
     'Feb',

@@ -13,7 +13,6 @@ export default {
     'studeni',
     'prosinac',
   ],
-
   abbr: [
     'sij',
     'vel',

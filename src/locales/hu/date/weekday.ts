@@ -8,6 +8,5 @@ export default {
     'szombat',
     'vasárnap',
   ],
-
   abbr: ['Hé', 'Ke', 'Sze', 'Csüt', 'Pé', 'Szo', 'Va'],
 };

@@ -8,6 +8,5 @@ export default {
     'vrijdag',
     'zaterdag',
   ],
-
   abbr: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
 };
