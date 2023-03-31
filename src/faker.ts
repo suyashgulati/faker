@@ -550,8 +550,8 @@ export class Faker {
    * // Creates a new instance with the same state as the current instance
    * const fork = faker.fork();
    * // The forked instance will produce the same values as the original
-   * fork.number.int(10); // 4 (1st call)
-   * fork.number.int(10); // 8 (2nd call)
+   * fork.number.int(10); // 4 (forked 1st call)
+   * fork.number.int(10); // 8 (forked 2nd call)
    *
    * // The original instance is not affected
    * faker.number.int(10); // 4 (1st call)
@@ -583,6 +583,7 @@ export class Faker {
    * faker.seed(42);
    * // Creates a new instance with a seed generated from the current instance
    * const derived = faker.derive(); // (1st call)
+   * // The derived instance will produce values dependent on the state of the original instance at the time of the derive call
    * derived.number.int(10); // 7 (derived 1st call)
    * derived.number.int(10); // 0 (derived 2nd call)
    *
