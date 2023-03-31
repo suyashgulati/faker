@@ -532,17 +532,30 @@ export class Faker {
   }
 
   /**
-   * Clones this faker instance including the current seed.
+   * Creates a new instance of faker with the same state as this instance.
    * This method is idempotent and does not consume any seed values.
-   * The forked instance will produce the same values as the original given that the methods are called in the same order.
+   * The forked instance will produce the same values as the original, given that the methods are called in the same order.
+   * This is useful for creating identical complex objects:
+   * - One to be mutated by the method under test
+   * - and the other one serves as a comparison.
    *
    * @see faker.derive If you want to generate deterministic but different values.
    *
    * @example
    * faker.seed(42);
-   * faker.fork().person.firstName(); // 'Lavina' (1st call)
-   * faker.fork().person.firstName(); // 'Lavina' (1st call)
-   * faker.person.firstName(); // 'Lavina' (1st call)
+   * faker.number.int(10); // 4 (1st call)
+   * faker.number.int(10); // 8 (2nd call)
+   *
+   * faker.seed(42);
+   * // Creates a new instance with the same state as the current instance
+   * const fork = faker.fork();
+   * // The forked instance will produce the same values as the original
+   * fork.number.int(10); // 4 (1st call)
+   * fork.number.int(10); // 8 (2nd call)
+   *
+   * // The original instance is not affected
+   * faker.number.int(10); // 4 (1st call)
+   * faker.number.int(10); // 8 (2nd call)
    */
   fork(): Faker {
     const instance = new Faker({
@@ -555,7 +568,7 @@ export class Faker {
 
   /**
    * Derives a new Faker instance from the current one.
-   * This will consume a single value from the original instance to initialize the seed of the derived new instance, thus has an impact on subsequent calls.
+   * This consumes a single value from the original instance to initialize the seed of the derived instance, and thus has a one-time effect on subsequent calls.
    * The derived instance can be used to generate deterministic values based on the current seed without consuming a dynamic amount of seed values.
    * This is useful, if you wish to generate a complex object (e.g. a Person) and might want to add a property to it later.
    * If the Person is created from a derived instance, then adding or removing properties from the Person doesn't have any impact on the other data, generated using the original instance (except from the derive call itself).
@@ -566,10 +579,13 @@ export class Faker {
    * faker.seed(42);
    * faker.number.int(10); // 4 (1st call)
    * faker.number.int(10); // 8 (2nd call)
+   *
    * faker.seed(42);
+   * // Creates a new instance with a seed generated from the current instance
    * const derived = faker.derive(); // (1st call)
-   * const firstName = derived.person.firstName(); // 'Lavina'
-   * const lastName = derived.person.lastName(); // 'Kuhic'
+   * derived.number.int(10); // 7 (derived 1st call)
+   * derived.number.int(10); // 0 (derived 2nd call)
+   *
    * // It doesn't matter how many calls to derived are executed
    * faker.number.int(10); // 8 (2nd call) <- This is same as before
    */
