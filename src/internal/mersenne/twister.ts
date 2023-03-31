@@ -323,10 +323,15 @@ export default class MersenneTwister19937 {
   }
   // These real versions are due to Isaku Wada, 2002/01/09
 
-  fork(): MersenneTwister19937 {
-    const clone = new MersenneTwister19937();
-    clone.mt = this.mt.slice();
-    clone.mti = this.mti;
-    return clone;
+  backupState(): { mt: number[]; mti: number } {
+    return {
+      mt: this.mt.slice(),
+      mti: this.mti,
+    };
+  }
+
+  restoreState(state: { mt: number[]; mti: number }): void {
+    this.mt = state.mt.slice();
+    this.mti = state.mti;
   }
 }

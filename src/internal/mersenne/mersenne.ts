@@ -20,10 +20,16 @@ export interface Mersenne {
   seed(seed: number | number[]): void;
 
   /**
-   * Creates an exact copy of this instance preserving the current seed.
+   * Copies the state of the given mersenne instance to this instance.
+   *
+   * @param other The mersenne instance to copy the state from.
    */
-  fork(): Mersenne;
+  copyStateFrom(other: Mersenne): void;
 }
+
+type MersenneImpl = Mersenne & {
+  twister: Twister;
+};
 
 /**
  * Generate seed based random numbers.
@@ -35,15 +41,6 @@ export default function mersenne(): Mersenne {
 
   twister.initGenrand(Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER));
 
-  return wrap(twister);
-}
-
-/**
- * Wraps the twister instance to provide a more convenient API.
- *
- * @param twister The twister instance to wrap.
- */
-function wrap(twister: Twister): Mersenne {
   return {
     next(): number {
       return twister.genrandReal2();
@@ -55,9 +52,10 @@ function wrap(twister: Twister): Mersenne {
         twister.initByArray(seed, seed.length);
       }
     },
-
-    fork(): Mersenne {
-      return wrap(twister.fork());
+    copyStateFrom(other: Mersenne): void {
+      const { twister: otherTwister } = other as MersenneImpl;
+      twister.restoreState(otherTwister.backupState());
     },
-  };
+    twister,
+  } as MersenneImpl;
 }

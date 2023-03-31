@@ -2,7 +2,7 @@ import type { LocaleDefinition } from './definitions';
 import { FakerError } from './errors/faker-error';
 import { deprecated } from './internal/deprecated';
 import type { Mersenne } from './internal/mersenne/mersenne';
-import newMersenne from './internal/mersenne/mersenne';
+import mersenne from './internal/mersenne/mersenne';
 import { AirlineModule } from './modules/airline';
 import { AnimalModule } from './modules/animal';
 import { ColorModule } from './modules/color';
@@ -112,7 +112,7 @@ export class Faker {
   }
 
   /** @internal */
-  private readonly _mersenne: Mersenne;
+  private readonly _mersenne: Mersenne = mersenne();
 
   /**
    * @deprecated Use the modules specific to the type of data you want to generate instead.
@@ -203,16 +203,6 @@ export class Faker {
      * @see mergeLocales
      */
     locale: LocaleDefinition | LocaleDefinition[];
-    /**
-     * The initial seed to use for this instance.
-     */
-    seed?: number;
-    /**
-     * The default reference date to use for this instance.
-     */
-    defaultRefDate?: string | Date | number | (() => Date);
-    /** @internal */
-    mersenne?: Mersenne;
   });
   /**
    * Creates a new instance of Faker.
@@ -272,16 +262,6 @@ export class Faker {
            * @see mergeLocales
            */
           locale: LocaleDefinition | LocaleDefinition[];
-          /**
-           * The initial seed to use for this instance.
-           */
-          seed?: number;
-          /**
-           * The default reference date to use for this instance.
-           */
-          defaultRefDate?: string | Date | number | (() => Date);
-          /** @internal */
-          mersenne?: Mersenne;
         }
       | {
           /**
@@ -310,21 +290,11 @@ export class Faker {
   );
   constructor(
     options:
-      | {
-          locale: LocaleDefinition | LocaleDefinition[];
-          seed?: number;
-          defaultRefDate?: string | Date | number | (() => Date);
-          /** @internal */
-          mersenne?: Mersenne;
-        }
+      | { locale: LocaleDefinition | LocaleDefinition[] }
       | {
           locales: Record<string, LocaleDefinition>;
           locale?: string;
           localeFallback?: string;
-          seed?: number;
-          defaultRefDate?: string | Date | number | (() => Date);
-          /** @internal */
-          mersenne?: Mersenne;
         }
   ) {
     const { locales } = options as {
@@ -349,7 +319,6 @@ export class Faker {
     }
 
     let { locale } = options;
-    const { seed, mersenne, defaultRefDate } = options;
 
     if (Array.isArray(locale)) {
       if (locale.length === 0) {
@@ -362,15 +331,6 @@ export class Faker {
     }
 
     this.definitions = locale as LocaleDefinition;
-    this._mersenne = mersenne ?? newMersenne();
-
-    if (seed != null) {
-      this.seed(seed);
-    }
-
-    if (defaultRefDate != null) {
-      this.setDefaultRefDate(defaultRefDate);
-    }
   }
 
   /**
@@ -585,11 +545,12 @@ export class Faker {
    * faker.person.firstName(); // 'Lavina' (1st call)
    */
   fork(): Faker {
-    return new Faker({
+    const instance = new Faker({
       locale: this.definitions,
-      defaultRefDate: this.defaultRefDate,
-      mersenne: this._mersenne.fork(),
     });
+    instance._mersenne.copyStateFrom(this._mersenne);
+    instance.setDefaultRefDate(this._defaultRefDate);
+    return instance;
   }
 
   /**
@@ -613,11 +574,12 @@ export class Faker {
    * faker.number.int(10); // 8 (2nd call) <- This is same as before
    */
   derive(): Faker {
-    return new Faker({
+    const instance = new Faker({
       locale: this.definitions,
-      defaultRefDate: this.defaultRefDate,
-      seed: this._mersenne.next(),
     });
+    instance.seed(this.number.int());
+    instance.setDefaultRefDate(this._defaultRefDate);
+    return instance;
   }
 }
 
