@@ -573,7 +573,7 @@ export class Faker {
    * This is useful, if you wish to generate a complex object (e.g. a Person) and might want to add a property to it later.
    * If the Person is created from a derived instance, then adding or removing properties from the Person doesn't have any impact on the other data, generated using the original instance (except from the derive call itself).
    *
-   * @see faker.fork If you want to create an exact clone of this faker instance without consuming a seed value.
+   * @see faker.fork If you want to create an exact clone of this Faker instance without consuming a seed value.
    *
    * @example
    * faker.seed(42);
