@@ -323,14 +323,14 @@ export default class MersenneTwister19937 {
   }
   // These real versions are due to Isaku Wada, 2002/01/09
 
-  backupState(): { mt: number[]; mti: number } {
+  backupState(): { mt: ReadonlyArray<number>; mti: number } {
     return {
       mt: this.mt.slice(),
       mti: this.mti,
     };
   }
 
-  restoreState(state: { mt: number[]; mti: number }): void {
+  restoreState(state: { mt: ReadonlyArray<number>; mti: number }): void {
     this.mt = state.mt.slice();
     this.mti = state.mti;
   }

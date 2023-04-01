@@ -532,7 +532,7 @@ export class Faker {
   }
 
   /**
-   * Creates a new instance of faker with the same state as this instance.
+   * Creates a new instance of Faker with the same state as this instance.
    * This method is idempotent and does not consume any seed values.
    * The forked instance will produce the same values as the original, given that the methods are called in the same order.
    * This is useful for creating identical complex objects:
