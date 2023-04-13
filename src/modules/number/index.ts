@@ -41,6 +41,7 @@ export class NumberModule {
    * @throws When options define `max < min`.
    *
    * @see faker.string.numeric() If you would like to generate a `string` of digits with a given length (range).
+   * @see faker.datatype.number() If you would like to generate a `number` that just fulfills the `typeof value === 'number'` check but can e.g. return `NaN`.
    *
    * @example
    * faker.number.int() // 55422
@@ -105,6 +106,8 @@ export class NumberModule {
    * @param options.min Lower bound for generated number. Defaults to `0.0`.
    * @param options.max Upper bound for generated number. Defaults to `1.0`.
    * @param options.precision Precision of the generated number, for example `0.01` will round to 2 decimal points.
+   *
+   * @see faker.datatype.number() If you would like to generate a `number` that just fulfills the `typeof value === 'number'` check but can e.g. return `NaN`.
    *
    * @example
    * faker.number.float() // 0.5688541042618454
@@ -323,6 +326,8 @@ export class NumberModule {
    * @param options.max Upper bound for generated bigint. Defaults to `min + 999999999999999n`.
    *
    * @throws When options define `max < min`.
+   *
+   * @see faker.datatype.bigint() If you would like to generate a `bigint` that just fulfills the `typeof value === 'bigint'` check.
    *
    * @example
    * faker.number.bigInt() // 55422n

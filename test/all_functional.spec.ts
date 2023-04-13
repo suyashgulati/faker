@@ -6,6 +6,8 @@ const IGNORED_MODULES = [
   'rawDefinitions',
   'definitions',
   'helpers',
+  // The `datatype` return values are considered invalid for most other methods
+  'datatype',
   '_mersenne',
   '_defaultRefDate',
 ];

@@ -139,6 +139,24 @@ faker.name.prefix(); // 'Mr'
 fakerZH_CN.person.prefix(); // throws a FakerError
 ```
 
+### Behavior of `faker.datatype` module has changed, as has the scope for which it is to be used
+
+The `faker.datatype` module is now only intended to be used for generating values that are comparable against JavaScript's `typeof` operator.  
+This means that e.g. `faker.datatype.number` will return any number (so also e.g. `NaN`), `faker.datatype.string` can now also return an empty string `''`, etc.
+
+```js
+typeof faker.datatype.bigint() === 'bigint'; // true
+typeof faker.datatype.boolean() === 'boolean'; // true
+typeof faker.datatype.function() === 'function'; // true
+typeof faker.datatype.number() === 'number'; // true
+typeof faker.datatype.object() === 'object'; // true
+typeof faker.datatype.string() === 'string'; // true
+typeof faker.datatype.symbol() === 'symbol'; // true
+typeof faker.datatype.undefined() === 'undefined'; // true
+```
+
+Every other method in `faker.datatype` has been moved to a more appropriate module or is marked for removal in v9.0.
+
 ### `faker.mersenne` and `faker.helpers.repeatString` removed
 
 `faker.mersenne` and `faker.helpers.repeatString` were only ever intended for internal use, and are no longer available.
@@ -310,6 +328,25 @@ faker.number.float({ max: 100, precision: 0.01 }); // 35.21
 | `faker.datatype.number` | `faker.number.int` or `faker.number.float` |
 | `faker.datatype.float`  | `faker.number.float`                       |
 | `faker.datatype.bigInt` | `faker.number.bigInt`                      |
+
+### String method of `faker.datatype` moved to new `faker.string` module
+
+The string method previously found in `faker.datatype` have been moved to a new `faker.string` module.
+For the old `faker.datatype.string` method you should replace with `faker.string.sample` or one of the other methods that suites your needs.
+
+```js
+// OLD
+faker.datatype.string(); // 'Zo!.:*e>wR'
+faker.datatype.string(5); // '6Bye8'
+
+// NEW
+faker.string.sample(); // 'Zo!.:*e>wR'
+faker.string.sample(5); // '6Bye8'
+```
+
+| Old method              | New method            |
+| ----------------------- | --------------------- |
+| `faker.datatype.string` | `faker.string.sample` |
 
 ### Deprecation of `faker.datatype.array`
 
