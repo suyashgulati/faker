@@ -219,7 +219,14 @@ export class DatatypeModule {
     return this.faker.helpers.weightedArrayElement<() => unknown>([
       { weight: 1, value: () => ({}) },
       { weight: 1, value: () => [] },
-      { weight: 1, value: () => this.datetime() },
+      {
+        weight: 1,
+        value: () =>
+          this.faker.date.between({
+            from: Date.UTC(1970, 0),
+            to: Date.UTC(2200, 0),
+          }),
+      },
       { weight: 1, value: () => null },
     ])();
   }

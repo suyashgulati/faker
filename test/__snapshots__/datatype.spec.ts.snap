@@ -133,7 +133,7 @@ exports[`datatype > 42 > object > noArgs 3`] = `null`;
 
 exports[`datatype > 42 > object > noArgs 4`] = `{}`;
 
-exports[`datatype > 42 > object > noArgs 5`] = `2075-10-07T15:29:05.646Z`;
+exports[`datatype > 42 > object > noArgs 5`] = `2149-04-30T17:19:34.850Z`;
 
 exports[`datatype > 42 > string > noArgs 1`] = `"ky2eiXX/J/"`;
 
@@ -477,13 +477,13 @@ exports[`datatype > 1337 > number > noArgs 5`] = `0.3210005429573357`;
 
 exports[`datatype > 1337 > object > noArgs 1`] = `[]`;
 
-exports[`datatype > 1337 > object > noArgs 2`] = `2007-06-16T10:42:27.147Z`;
+exports[`datatype > 1337 > object > noArgs 2`] = `2006-07-01T09:44:53.900Z`;
 
 exports[`datatype > 1337 > object > noArgs 3`] = `{}`;
 
 exports[`datatype > 1337 > object > noArgs 4`] = `[]`;
 
-exports[`datatype > 1337 > object > noArgs 5`] = `2040-07-10T23:23:28.285Z`;
+exports[`datatype > 1337 > object > noArgs 5`] = `2075-08-23T08:59:20.515Z`;
 
 exports[`datatype > 1337 > string > noArgs 1`] = `"U/4:SK$>6Q"`;
 
