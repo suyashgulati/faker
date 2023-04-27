@@ -169,10 +169,10 @@ jobs:
       - name: Check formatting
         run: pnpm prettier --check .
 
-  ts-check-scripts:
+  ts-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    name: 'TS-Check Scripts: node-18, ubuntu-latest'
+    name: 'TS-Check: node-18, ubuntu-latest'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -181,8 +181,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
-        with:
-          version: 7
 
       - name: Set node version to 18
         uses: actions/setup-node@v3
@@ -195,37 +193,8 @@ jobs:
         env:
           CYPRESS_INSTALL_BINARY: 0
 
-      - name: Check scripts
-        run: pnpm run ts-check:scripts
-
-  ts-check-tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    name: 'TS-Check Tests: node-18, ubuntu-latest'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.4
-        with:
-          version: 7
-
-      - name: Set node version to 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'pnpm'
-
-      - name: Install deps
-        run: pnpm install
-        env:
-          CYPRESS_INSTALL_BINARY: 0
-
-      - name: Check tests
-        run: pnpm run ts-check:tests
+      - name: Check TS
+        run: pnpm run ts-check
 
   codecov:
     runs-on: ubuntu-latest
